@@ -1,8 +1,11 @@
+// src/pages/CoordApplicants.jsx
+
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import api from '../api/axios';
+import api from '../api'; // Corrected from '../api/axios'
 import toast from 'react-hot-toast';
-import Spinner from '../components/Spinner';
+// Assuming you have these components. If not, they can be simple placeholders.
+import Spinner from '../components/Spinner'; 
 import StatusChip from '../components/StatusChip';
 
 function CoordApplicants() {
@@ -13,6 +16,7 @@ function CoordApplicants() {
 
     const fetchApplicants = async () => {
         try {
+            // Fetch both applications and job details concurrently
             const [appsResponse, jobResponse] = await Promise.all([
                 api.get(`/jobs/${id}/applications`),
                 api.get(`/jobs/${id}`)
@@ -42,7 +46,7 @@ function CoordApplicants() {
 
         try {
             await promise;
-            // Refresh data after update
+            // Refresh data after update to show the new status
             fetchApplicants();
         } catch (error) {
             console.error(error);
@@ -53,6 +57,7 @@ function CoordApplicants() {
         return <div className="flex justify-center items-center h-64"><Spinner /></div>;
     }
 
+    // The rest of the component remains the same...
     return (
         <div className="bg-white p-6 sm:p-8 rounded-lg border border-slate-200 shadow-sm">
             <h1 className="text-2xl font-bold text-slate-800">Applicants for {job?.title}</h1>
@@ -78,7 +83,7 @@ function CoordApplicants() {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{app.profile_snapshot.branch}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{app.profile_snapshot.ug_cgpa || app.profile_snapshot.ug_percentage}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                        <a href={app.profile_snapshot.resume_url} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-800 font-medium">
+                                        <a href={app.profile_snapshot.resume_url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 font-medium">
                                             View
                                         </a>
                                     </td>
@@ -87,7 +92,7 @@ function CoordApplicants() {
                                     </td>
                                      <td className="px-6 py-4 whitespace-nowrap text-sm">
                                         <select
-                                            className="form-select text-xs rounded-md border-slate-300 focus:ring-primary-500 focus:border-primary-500"
+                                            className="form-select text-xs rounded-md border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                                             value={app.status}
                                             onChange={(e) => handleStatusChange(app._id, e.target.value)}
                                         >

@@ -1,6 +1,8 @@
+// src/pages/CoordCreateJob.jsx
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axios';
+import api from '../api'; // Corrected from '../api/axios'
 import toast from 'react-hot-toast';
 
 function CoordCreateJob() {
@@ -53,13 +55,14 @@ function CoordCreateJob() {
             ...formData.eligibility,
             min_cgpa: formData.eligibility.min_cgpa ? Number(formData.eligibility.min_cgpa) : null,
             min_percentage: formData.eligibility.min_percentage ? Number(formData.eligibility.min_percentage) : null,
+            branches: formData.eligibility.branches.toString().split(',').map(s => s.trim()).filter(Boolean),
           }
         };
 
         try {
             const response = await api.post('/jobs', jobData);
             toast.success('Job created successfully!');
-            navigate(`/jobs/${response.data._id}`);
+            navigate(`/coord/dashboard`); // Navigate to dashboard after creation
         } catch (error) {
             toast.error(error.response?.data?.error || 'Failed to create job.');
             console.error(error);
@@ -68,6 +71,7 @@ function CoordCreateJob() {
         }
     };
 
+    // The rest of the component remains the same...
     return (
         <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl mx-auto">
             <div className="bg-white p-8 rounded-lg border border-slate-200 shadow-sm">
@@ -87,7 +91,7 @@ function CoordCreateJob() {
                         <input name="ctc" type="number" value={formData.ctc} onChange={handleInputChange} placeholder="Annual CTC (LPA)" className="form-input w-full" />
                         <input name="stipend" type="number" value={formData.stipend} onChange={handleInputChange} placeholder="Monthly Stipend (for Internship)" className="form-input w-full" />
                     </div>
-                    <input name="tech_stack" value={formData.tech_stack} onChange={handleInputChange} placeholder="Tech Stack (comma-separated, e.g., React, Python)" className="form-input w-full" />
+                    <input name="tech_stack" value={formData.tech_stack} onChange={e => setFormData({...formData, tech_stack: e.target.value})} placeholder="Tech Stack (comma-separated, e.g., React, Python)" className="form-input w-full" />
                     <textarea name="description" value={formData.description} onChange={handleInputChange} placeholder="Job Description" className="form-input w-full min-h-32" />
                     <div>
                         <label className="block text-sm font-medium text-slate-700">Application Deadline</label>
@@ -102,7 +106,7 @@ function CoordCreateJob() {
                     <input name="min_cgpa" type="number" step="0.1" value={formData.eligibility.min_cgpa} onChange={handleEligibilityChange} placeholder="Minimum CGPA (e.g., 7.5)" className="form-input w-full" />
                     <input name="min_percentage" type="number" step="0.1" value={formData.eligibility.min_percentage} onChange={handleEligibilityChange} placeholder="Minimum Percentage (e.g., 75)" className="form-input w-full" />
                     <div className="md:col-span-2">
-                        <input name="branches" value={formData.eligibility.branches} onChange={(e) => handleEligibilityChange({ target: { name: 'branches', value: e.target.value.split(',').map(s => s.trim()) } })} placeholder="Eligible Branches (comma-separated)" className="form-input w-full" />
+                        <input name="branches" value={formData.eligibility.branches} onChange={(e) => handleEligibilityChange({ target: { name: 'branches', value: e.target.value } })} placeholder="Eligible Branches (comma-separated)" className="form-input w-full" />
                     </div>
                     <label className="flex items-center space-x-2 md:col-span-2">
                         <input name="backlogs_allowed" type="checkbox" checked={formData.eligibility.backlogs_allowed} onChange={handleEligibilityChange} className="form-checkbox h-5 w-5" />
@@ -112,7 +116,7 @@ function CoordCreateJob() {
             </div>
 
             <div className="flex justify-end">
-                <button type="submit" disabled={isSubmitting} className="px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 disabled:bg-primary-300 transition duration-300">
+                <button type="submit" disabled={isSubmitting} className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 transition duration-300">
                     {isSubmitting ? 'Posting Job...' : 'Post Job'}
                 </button>
             </div>

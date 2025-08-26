@@ -14,6 +14,10 @@ import CoordApplicants from './pages/CoordApplicants';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
+// Import the coordinator pages that were missing routes
+import CoordDashboard from './pages/CoordDashboard';
+import CoordEditJob from './pages/CoordEditJob';
+
 function AppContent() {
     const { isAuthenticated } = useAuth();
     
@@ -24,14 +28,21 @@ function AppContent() {
                 {isAuthenticated && <Navbar />}
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <Routes>
+                        {/* Auth Routes */}
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        
+                        {/* Common/Student Routes */}
                         <Route path="/" element={<ProtectedRoute><JobsList /></ProtectedRoute>} />
                         <Route path="/jobs" element={<ProtectedRoute><JobsList /></ProtectedRoute>} />
                         <Route path="/jobs/:id" element={<ProtectedRoute><JobDetail /></ProtectedRoute>} />
                         <Route path="/me" element={<ProtectedRoute requiredRole="student"><Profile /></ProtectedRoute>} />
                         <Route path="/my-applications" element={<ProtectedRoute requiredRole="student"><MyApplications /></ProtectedRoute>} />
+                        
+                        {/* Coordinator Routes */}
+                        <Route path="/coord/dashboard" element={<ProtectedRoute requiredRole="coordinator"><CoordDashboard /></ProtectedRoute>} />
                         <Route path="/coord/jobs/new" element={<ProtectedRoute requiredRole="coordinator"><CoordCreateJob /></ProtectedRoute>} />
+                        <Route path="/coord/jobs/:id/edit" element={<ProtectedRoute requiredRole="coordinator"><CoordEditJob /></ProtectedRoute>} />
                         <Route path="/coord/jobs/:id/applicants" element={<ProtectedRoute requiredRole="coordinator"><CoordApplicants /></ProtectedRoute>} />
                     </Routes>
                 </main>
